@@ -1,0 +1,21 @@
+/* Другое фото */
+.intro.intro--ready .intro__photo {
+  background-image: url("../assets/ready-background-phone.jpg");
+}
+
+/* Заголовок в одну строку (283×50) */
+.intro.intro--ready .intro__title {
+  display: block;
+  white-space: nowrap;
+  line-height: 50px;
+}
+
+@media (min-width: 768px) {
+  .intro.intro--ready .intro__photo {
+    background-image: url("../assets/ready-background-desktop.jpg");
+  }
+
+  .intro.intro--ready .intro__title {
+    line-height: 1.1;
+  }
+}

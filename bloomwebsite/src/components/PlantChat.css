@@ -1,0 +1,267 @@
+.cc {
+  display: flex;
+  flex-direction: column;
+}
+
+.cc__list {
+  height: 400px;
+  padding: 2px 0 12px;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cc__list::-webkit-scrollbar {
+  display: none;
+}
+
+.cc__row {
+  display: flex;
+}
+
+.cc__row--user {
+  justify-content: flex-end;
+}
+
+.cc__bubble {
+  max-width: 84%;
+  padding: 11px 16px;
+  border-radius: 22px;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 400;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  animation: ccIn 0.3s var(--ease) both;
+}
+
+.cc__bubble--assistant {
+  background: var(--card);
+  border-bottom-left-radius: 8px;
+}
+
+.cc__bubble--user {
+  background: var(--accent);
+  color: #000;
+  border-bottom-right-radius: 8px;
+}
+
+@keyframes ccIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- «Печатает…» ---------- */
+.cc__typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 17px 18px;
+}
+
+.cc__typing span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  animation: ccDot 1.2s ease-in-out infinite;
+}
+
+.cc__typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.cc__typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes ccDot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: none;
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* ---------- Быстрые вопросы ---------- */
+.cc__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.cc__chip {
+  height: 38px;
+  padding: 0 16px 1px;
+  border: none;
+  border-radius: 1000px;
+  background: var(--card);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s var(--ease), background 0.2s ease;
+}
+
+.cc__chip:active {
+  transform: scale(0.96);
+}
+
+.cc__chip:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ---------- Ввод ---------- */
+.cc__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.cc__input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  outline: none;
+  border-radius: 1000px;
+  background: var(--card);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 17px;
+  caret-color: var(--accent);
+  transition: box-shadow 0.2s ease;
+}
+
+.cc__input::placeholder {
+  color: rgba(235, 235, 245, 0.3);
+}
+
+.cc__input:focus-visible {
+  box-shadow: 0 0 0 1px rgba(226, 241, 157, 0.5);
+}
+
+.cc__send {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s var(--ease), opacity 0.3s ease;
+}
+
+.cc__send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cc__send:not(:disabled):active {
+  transform: scale(0.92);
+}
+
+.cc__send:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.cc__note {
+  margin: 10px 0 0 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+@media (min-width: 768px) {
+  .cc__list {
+    height: 480px;
+  }
+
+  .cc__bubble {
+    max-width: 78%;
+  }
+}
+
+@media (hover: hover) {
+  .cc__chip:hover {
+    background: #232325;
+    transform: translateY(-2px);
+  }
+
+  .cc__send:not(:disabled):hover {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc__bubble,
+  .cc__typing span {
+    animation: none;
+  }
+}
+
+/* ---------- Загрузка, ошибки, повтор ---------- */
+.cc__state {
+  margin: 40px 0;
+  text-align: center;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.cc__error {
+  margin: 6px 6px 0;
+  font-size: 14px;
+  line-height: 19px;
+  color: #ff6b6b;
+}
+
+.cc__failed {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.cc__retry {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.cc__state .cc__retry {
+  margin: 12px auto 0;
+  font-size: 15px;
+}

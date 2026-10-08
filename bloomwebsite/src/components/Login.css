@@ -1,0 +1,22 @@
+.reg.reg--login .reg__photo {
+  background-image: url("../assets/login-background-phone.jpg");
+}
+
+.reg.reg--login .reg__fields {
+  height: 100px;
+}
+
+@media (min-width: 768px) {
+  .reg.reg--login {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+
+  .reg.reg--login .reg__photo {
+    grid-column: 2;
+    background-image: url("../assets/login-background-desktop.jpg");
+  }
+
+  .reg.reg--login .reg__content {
+    grid-column: 1;
+  }
+}

@@ -1,0 +1,250 @@
+.dsheet {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+/* ---------- Затемнение ---------- */
+.dsheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  touch-action: none;
+  animation: dsheetFade 0.25s ease both;
+}
+
+/* ---------- Панель ---------- */
+.dsheet__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--kb, 0px);
+  max-height: 100%;
+  padding: 28px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+  border-radius: 28px 28px 0 0;
+  background: var(--card);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 -8px 40px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transition: bottom 0.25s var(--ease);
+  animation: dsheetUp 0.4s var(--ease) both;
+}
+
+/* Полоска шторки на телефоне */
+.dsheet__panel::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 36px;
+  height: 4px;
+  border-radius: 1000px;
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateX(-50%);
+}
+
+/* ---------- Иконка предупреждения ---------- */
+.dsheet__badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 69, 58, 0.18);
+  color: #ff453a;
+  display: grid;
+  place-items: center;
+}
+
+.dsheet__title {
+  margin: 16px 0 0;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 400;
+  letter-spacing: -0.4px;
+}
+
+.dsheet__text {
+  margin: 8px 0 20px;
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+/* ---------- Поле пароля ---------- */
+.dsheet__input {
+  width: 100%;
+  height: 52px;
+  box-sizing: border-box;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 1000px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 17px;
+  font-weight: 400;
+  outline: none;
+  caret-color: var(--accent);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.dsheet__input::placeholder {
+  color: rgba(235, 235, 245, 0.35);
+}
+
+.dsheet__input:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.dsheet__input:-webkit-autofill {
+  -webkit-text-fill-color: #fff;
+  transition: background-color 9999s ease-out;
+}
+
+/* ---------- Ошибка ---------- */
+.dsheet__error {
+  min-height: 20px;
+  margin: 10px 6px 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ff6b6b;
+}
+
+/* ---------- Кнопки ---------- */
+.dsheet__danger,
+.dsheet__cancel {
+  display: block;
+  width: 100%;
+  height: 52px;
+  padding: 0 0 1px;
+  border: none;
+  border-radius: 1000px;
+  font-family: var(--font);
+  font-size: 17px;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    transform 0.25s var(--ease),
+    filter 0.2s ease,
+    opacity 0.3s ease;
+}
+
+/* Опасное действие: красная кнопка */
+.dsheet__danger {
+  background: #ff453a;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Отмена: серая pill-кнопка */
+.dsheet__cancel {
+  margin-top: 10px;
+  background: rgba(120, 120, 128, 0.24);
+  color: #fff;
+  font-weight: 500;
+}
+
+.dsheet__danger:disabled,
+.dsheet__cancel:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.dsheet__danger:not(:disabled):active,
+.dsheet__cancel:not(:disabled):active {
+  transform: scale(0.97);
+  filter: brightness(0.94);
+}
+
+.dsheet__danger:focus-visible,
+.dsheet__cancel:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .dsheet__danger:not(:disabled):hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+  }
+
+  .dsheet__cancel:not(:disabled):hover {
+    transform: translateY(-2px);
+    filter: brightness(1.12);
+  }
+}
+
+/* ---------- ПК: окно по центру ---------- */
+@media (min-width: 768px) {
+  .dsheet__panel {
+    inset: 0;
+    margin: auto;
+    width: min(440px, calc(100% - 48px));
+    height: fit-content;
+    padding: 28px;
+    border-radius: 28px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 24px 60px rgba(0, 0, 0, 0.6);
+    animation-name: dsheetPop;
+  }
+
+  .dsheet__panel::before {
+    display: none;
+  }
+}
+
+/* ---------- Анимации ---------- */
+@keyframes dsheetFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dsheetUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dsheetPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dsheet__backdrop,
+  .dsheet__panel {
+    animation: none;
+    transition: none;
+  }
+
+  .dsheet__danger,
+  .dsheet__cancel {
+    transition: none;
+  }
+}

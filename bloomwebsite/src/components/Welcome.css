@@ -1,0 +1,240 @@
+.intro {
+  --accent: #e2f19d;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Inter", system-ui, "Helvetica Neue", Arial, sans-serif;
+
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Фото (телефон: 393×698 из 852 ≈ 82%) ---------- */
+.intro__photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 82%;
+
+  background-image: url("../assets/welcome-background-phone.jpg");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+
+  animation: introPhotoZoom 8s ease-out both;
+}
+
+/* ---------- Затемнение снизу (393×379 ≈ 44.5%) ---------- */
+.intro__shade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44.5%;
+  min-height: 340px;
+  z-index: 1;
+  pointer-events: none;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.55) 35%,
+    rgba(0, 0, 0, 0.92) 70%,
+    #000 100%
+  );
+}
+
+/* плавный блюр фото под градиентом (аналог layer blur) */
+.intro__shade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 60%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 60%);
+}
+
+/* ---------- Контент ---------- */
+.intro__content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  /* слева/справа 34, снизу 36 + безопасная зона iPhone */
+  padding: 0 34px calc(36px + env(safe-area-inset-bottom, 0px));
+}
+
+.intro__title {
+  margin: 0;
+  max-width: 283px;
+
+  display: flex;
+  flex-direction: column;
+
+  font-size: 42px;
+  line-height: 47px;
+  font-weight: 400;
+  letter-spacing: -0.6px;
+  color: #fff;
+
+  animation: introUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+.intro__accent {
+  color: var(--accent);
+}
+
+.intro__text {
+  margin: 15px 0 45px;
+  max-width: 283px;
+
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  text-wrap: balance;
+
+  animation: introUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.intro__button {
+  width: 100%;
+  max-width: 420px;
+  height: 50px;
+  align-self: center;
+
+  border: none;
+  border-radius: 1000px;
+  background: var(--accent);
+  color: #000;
+
+  font-family: var(--font);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease;
+  animation: introUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.intro__button:active {
+  transform: scale(0.97);
+  filter: brightness(0.94);
+}
+
+.intro__button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* ---------- Анимации ---------- */
+@keyframes introUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes introPhotoZoom {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* ---------- ПК / планшет: две колонки ---------- */
+@media (min-width: 768px) {
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    padding: 24px;
+  }
+
+  .intro__photo {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    height: auto;
+    border-radius: 32px;
+    background-image: url("../assets/welcome-background-desktop.jpg");
+    background-position: center;
+    animation: none;
+  }
+
+  .intro__shade {
+    display: none;
+  }
+
+  .intro__content {
+    position: static;
+    grid-column: 1;
+    grid-row: 1;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 clamp(32px, 6vw, 96px);
+  }
+
+  .intro__title {
+    max-width: none;
+    font-size: clamp(48px, 5vw, 72px);
+    line-height: 1.1;
+  }
+
+  .intro__text {
+    max-width: 440px;
+    margin: 20px 0 48px;
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .intro__button {
+    align-self: flex-start;
+    max-width: 360px;
+    height: 56px;
+    font-size: 18px;
+  }
+}
+
+@media (hover: hover) {
+  .intro__button:hover {
+    transform: translateY(-2px) scale(1.02);
+    filter: brightness(1.05);
+  }
+}
+
+@media (min-width: 768px) and (hover: hover) {
+  .intro__button:hover {
+    filter: brightness(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro__photo,
+  .intro__title,
+  .intro__text,
+  .intro__button {
+    animation: none;
+  }
+}

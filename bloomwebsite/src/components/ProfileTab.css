@@ -1,0 +1,237 @@
+.pf {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* ---------- Заголовок ---------- */
+.pf__head {
+  animation: pfUp 0.6s var(--ease) both;
+}
+
+.pf__head .section__title {
+  margin: 0;
+}
+
+.pf__head-sub {
+  margin: 3px 0 0;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.pf__body {
+  max-width: 560px;
+}
+
+/* ---------- Карточка пользователя ---------- */
+.pf__user {
+  --k: 1;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 26px;
+  background: var(--card);
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  animation: pfUp 0.6s var(--ease) both;
+  animation-delay: calc(var(--k) * 70ms);
+}
+
+.pf__avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+}
+
+.pf__user-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pf__name {
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pf__user-sub {
+  margin-top: 1px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+/* ---------- Секции ---------- */
+.pf__section {
+  margin-top: 24px;
+  animation: pfUp 0.6s var(--ease) both;
+  animation-delay: calc(var(--k) * 70ms);
+}
+
+.pf__section--account {
+  --k: 2;
+}
+
+.pf__section--danger {
+  --k: 3;
+}
+
+.pf__section-title {
+  margin: 0 0 10px 6px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Группа строк в стиле iOS, как на экране растения */
+.pf__list {
+  border-radius: 26px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.pf__row {
+  position: relative;
+  width: 100%;
+  min-height: 68px;
+  padding: 0 16px;
+  border: none;
+  background: none;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease;
+}
+
+.pf__list .pf__row + .pf__row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 62px;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pf__row:active {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.pf__row:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -3px;
+}
+
+/* ---------- Иконка, текст, шеврон ---------- */
+.pf__icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(226, 241, 157, 0.14);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.pf__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pf__label {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+.pf__sub {
+  margin-top: 1px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.pf__chev {
+  flex: none;
+  color: rgba(255, 255, 255, 0.3);
+  transition: transform 0.25s var(--ease);
+}
+
+/* ---------- Опасная зона ---------- */
+.pf__row--danger .pf__icon {
+  background: rgba(255, 69, 58, 0.18);
+  color: #ff453a;
+}
+
+.pf__row--danger .pf__label {
+  color: #ff6b6b;
+}
+
+@media (min-width: 768px) {
+  .pf__row {
+    min-height: 72px;
+  }
+}
+
+@media (hover: hover) {
+  .pf__row:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .pf__row:hover .pf__chev {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes pfUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf__head,
+  .pf__user,
+  .pf__section {
+    animation: none;
+  }
+
+  .pf__row,
+  .pf__chev {
+    transition: none;
+  }
+}

@@ -1,0 +1,66 @@
+/* Другое фото */
+.reg.reg--plant .reg__photo {
+  background-image: url("../assets/plant-background-phone.jpg");
+}
+
+/* Заголовок в две строки */
+.reg.reg--plant .reg__title {
+  white-space: normal;
+}
+
+.reg--plant .plant__line {
+  display: block;
+  white-space: nowrap;
+}
+
+/* Поле даты: выглядит как остальные */
+.reg--plant .reg__input--date {
+  text-align: left;
+  min-width: 0;
+  color-scheme: dark;
+}
+
+.reg--plant .reg__input--date::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.reg--plant .reg__input--date::-webkit-calendar-picker-indicator {
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+/* ---------- Телефон: размеры из макета ---------- */
+@media (max-width: 767px) {
+  .reg.reg--plant .reg__shade {
+    height: 61%;
+    min-height: 500px;
+  }
+
+  /* слева 34 (без доп. 7px, как на регистрации) */
+  .reg.reg--plant .reg__title {
+    margin-left: 0;
+    line-height: 41px;
+  }
+
+  .reg.reg--plant .reg__text {
+    margin: 15px 0;
+    max-width: 289px;
+    line-height: 23.67px;
+  }
+
+  /* между полями и кнопкой 45px */
+  .reg.reg--plant .reg__button {
+    margin-top: 45px;
+  }
+}
+
+/* ---------- ПК ---------- */
+@media (min-width: 768px) {
+  .reg.reg--plant .reg__photo {
+    background-image: url("../assets/plant-background-desktop.jpg");
+  }
+
+  .reg.reg--plant .reg__button {
+    margin-top: 28px;
+  }
+}

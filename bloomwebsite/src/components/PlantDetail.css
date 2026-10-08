@@ -1,0 +1,534 @@
+.pd {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* ---------- Фото: от самого верха экрана, во всю ширину ---------- */
+.pd__hero {
+  position: relative;
+  /* вылезаем за отступы области прокрутки (34px по бокам, 12px + safe-area сверху) */
+  margin: calc(-12px - env(safe-area-inset-top, 0px)) -34px 0;
+  height: calc(440px + env(safe-area-inset-top, 0px));
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.pd__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.pd__empty {
+  position: absolute;
+  inset: 0;
+  padding-bottom: 80px;
+  display: grid;
+  place-items: center;
+  color: rgba(226, 241, 157, 0.4);
+}
+
+/* внизу фото растворяется в чёрном, как на экранах онбординга;
+   сверху лёгкое затемнение под кнопки */
+.pd__fade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      #000 0%,
+      rgba(0, 0, 0, 0.88) 16%,
+      rgba(0, 0, 0, 0.5) 42%,
+      rgba(0, 0, 0, 0) 72%
+    ),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 22%);
+  pointer-events: none;
+}
+
+.pd__back {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: 34px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+
+  display: grid;
+  place-items: center;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s var(--ease);
+}
+
+.pd__photo {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: 34px;
+  z-index: 2;
+  height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  border-radius: 1000px;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-size: 15px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s var(--ease);
+}
+
+.pd__photo--text {
+  padding: 0 16px 0 14px;
+}
+
+.pd__photo input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pd__back:active,
+.pd__photo:active {
+  transform: scale(0.94);
+}
+
+.pd__back:focus-visible,
+.pd__photo:focus-within {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.pd__info {
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  bottom: 8px;
+}
+
+.pd__name {
+  margin: 0;
+  font-size: 40px;
+  line-height: 46px;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pd__species {
+  margin: 4px 0 14px;
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pd__days {
+  height: 30px;
+  padding: 0 14px 1px;
+  border-radius: 1000px;
+  background: var(--accent);
+  color: #000;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 600;
+
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ---------- Показания ---------- */
+.pd__body {
+  padding-top: 24px;
+}
+
+.pd__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.pd__head .section__title {
+  margin: 0;
+}
+
+.pd__history {
+  position: relative;
+  height: 38px;
+  padding: 0 16px 0 12px;
+  border: none;
+  border-radius: 1000px;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s var(--ease);
+}
+
+.pd__history:active {
+  transform: scale(0.95);
+}
+
+.pd__history:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* Группа строк в стиле iOS (как поля на регистрации) */
+.pd__list {
+  border-radius: 26px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.pd__list--links {
+  margin-top: 20px;
+}
+
+.pd__row {
+  position: relative;
+  width: 100%;
+  min-height: 60px;
+  padding: 0 16px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* тонкий разделитель, начинается после иконки */
+.pd__row + .pd__row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 62px;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pd__row-icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(226, 241, 157, 0.14);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.pd__row-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+.pd__row-value {
+  flex: none;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+}
+
+.pd__row-unit {
+  margin-left: 3px;
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+/* Строки-кнопки со стрелкой */
+.pd__row--link {
+  min-height: 68px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease;
+}
+
+.pd__row--link:active {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.pd__row--link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -3px;
+}
+
+.pd__row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pd__row-text .pd__row-label {
+  flex: none;
+}
+
+.pd__row-sub {
+  margin-top: 1px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.pd__row-chev {
+  flex: none;
+  color: rgba(255, 255, 255, 0.3);
+  transition: transform 0.25s var(--ease);
+}
+
+/* ---------- ПК: фото слева, данные справа ---------- */
+@media (min-width: 768px) {
+  .pd {
+    display: grid;
+    grid-template-columns: minmax(320px, 5fr) minmax(0, 7fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  .pd__hero {
+    margin: 0;
+    height: calc(100dvh - 160px);
+    min-height: 520px;
+    max-height: 780px;
+    border-radius: 32px;
+  }
+
+  .pd__back {
+    top: 20px;
+    left: 20px;
+  }
+
+  .pd__photo {
+    top: 20px;
+    right: 20px;
+  }
+
+  .pd__info {
+    left: 32px;
+    right: 32px;
+    bottom: 32px;
+  }
+
+  .pd__body {
+    padding-top: 0;
+  }
+
+  .pd__row {
+    min-height: 64px;
+  }
+
+  .pd__row--link {
+    min-height: 72px;
+  }
+}
+
+@media (hover: hover) {
+  .pd__back:hover,
+  .pd__photo:hover {
+    transform: scale(1.06);
+  }
+
+  .pd__history:hover {
+    transform: translateY(-2px);
+  }
+
+  .pd__row--link:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .pd__row--link:hover .pd__row-chev {
+    transform: translateX(3px);
+  }
+}
+
+.pd__updated {
+  margin: 3px 0 0;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+/* ---------- История внутри блока «Показания» ---------- */
+.pd__body .ph__seg {
+  margin-top: 0;
+}
+
+.pd__body .ph__panel {
+  margin-top: 20px;
+}
+
+.pd__history--on {
+  color: var(--accent);
+}
+
+/* плавная смена «показания ⇄ история» */
+.pd__swap {
+  animation: pdSwap 0.3s var(--ease) both;
+}
+
+@keyframes pdSwap {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd__swap {
+    animation: none;
+  }
+}
+
+/* ---------- Рекомендуемые значения ---------- */
+.pd__row--sensor {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.pd__row--sensor .pd__row-sub {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.pd__row-side {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.pd__row-value--warn,
+.pd__row-flag {
+  color: #ff9f0a;
+}
+
+.pd__row-flag {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+/* шкала: светлая зона = рекомендуемый диапазон, точка = сейчас */
+.pd__bar {
+  position: relative;
+  display: block;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pd__bar-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  background: rgba(226, 241, 157, 0.45);
+}
+
+.pd__bar-dot {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--card);
+  transition: left 0.4s var(--ease);
+}
+
+.pd__bar-dot--warn {
+  background: #ff9f0a;
+}
+
+.pd__body {
+  scroll-margin-top: 12px;
+}
+/* ---------- Фаза и советы по уходу ---------- */
+.pd__care {
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 26px;
+  background: var(--card);
+}
+
+.pd__stage {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px 1px;
+  border-radius: 1000px;
+  background: rgba(226, 241, 157, 0.14);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pd__care-notes {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pd__care-error {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.pd__care-error button {
+  margin-left: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}

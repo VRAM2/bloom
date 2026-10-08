@@ -1,0 +1,595 @@
+.ph {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+
+/* ---------- Переключатель разделов ---------- */
+.ph__seg {
+  position: relative;
+  margin-top: 20px;
+  padding: 4px;
+  border-radius: 1000px;
+
+  display: grid;
+  grid-template-columns: repeat(var(--n), 1fr);
+}
+
+.ph__seg-indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--n));
+  border-radius: 1000px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+
+  transform: translateX(calc(var(--i) * 100%));
+  transition: transform 0.5s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+.ph__seg-btn {
+  position: relative;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 1000px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.3s ease, transform 0.25s var(--ease);
+}
+
+.ph__seg-btn--active {
+  color: var(--accent);
+}
+
+.ph__seg-btn:active {
+  transform: scale(0.95);
+}
+
+.ph__seg-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
+.ph__panel {
+  margin-top: 24px;
+}
+
+/* ---------- Общие элементы ---------- */
+.ph__icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(226, 241, 157, 0.14);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.ph__unit {
+  margin-left: 3px;
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.ph__empty {
+  margin: 40px 0;
+  text-align: center;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+/* ---------- Показания ---------- */
+.ph__sensors {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.ph__card {
+  padding: 18px;
+  border-radius: 26px;
+  background: var(--card);
+}
+
+.ph__card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ph__card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.ph__card-label {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+.ph__card-range {
+  margin-top: 1px;
+  font-size: 13px;
+  line-height: 17px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.ph__card-now {
+  flex: none;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 400;
+  letter-spacing: -0.6px;
+}
+
+.ph__chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 16px;
+  overflow: visible;
+}
+
+.ph__grid {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 1;
+}
+
+.ph__area {
+  fill: rgba(226, 241, 157, 0.08);
+}
+
+.ph__line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ph__dot {
+  fill: var(--accent);
+}
+
+.ph__dot-ring {
+  fill: rgba(226, 241, 157, 0.2);
+}
+
+.ph__axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ---------- Заметки ---------- */
+.ph__compose {
+  border-radius: 26px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.ph__input {
+  display: block;
+  width: 100%;
+  min-height: 92px;
+  padding: 16px 18px 4px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 400;
+  caret-color: var(--accent);
+}
+
+.ph__input::placeholder {
+  color: rgba(235, 235, 245, 0.3);
+}
+
+.ph__compose-foot {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px 12px;
+}
+
+.ph__save {
+  height: 40px;
+  padding: 0 22px 1px;
+  border: none;
+  border-radius: 1000px;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s var(--ease), opacity 0.3s ease;
+}
+
+.ph__save:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ph__save:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+.ph__save:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.ph__note-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.ph__note {
+  padding: 16px 18px 12px;
+  border-radius: 22px;
+  background: var(--card);
+}
+
+.ph__note-text {
+  margin: 0;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 400;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ph__note-foot {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.ph__note-del {
+  width: 32px;
+  height: 32px;
+  margin-right: -6px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: rgba(255, 255, 255, 0.4);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.ph__note-del:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ph__note-del:focus-visible {
+  outline: 2px solid #fff;
+}
+
+/* ---------- Действия ---------- */
+.ph__group + .ph__group {
+  margin-top: 24px;
+}
+
+.ph__group-title {
+  margin: 0 0 10px 6px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.ph__list {
+  border-radius: 26px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.ph__row {
+  position: relative;
+  min-height: 68px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ph__row + .ph__row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 62px;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ph__row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ph__row-title {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+.ph__row-sub {
+  margin-top: 1px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.ph__row-time {
+  flex: none;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+/* ---------- Фото ---------- */
+.ph__gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.ph__photo {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: var(--card);
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s var(--ease);
+}
+
+.ph__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ph__photo:active {
+  transform: scale(0.97);
+}
+
+.ph__photo:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.ph__photo-time {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  height: 26px;
+  padding: 0 10px 1px;
+  border-radius: 1000px;
+  font-size: 12px;
+  line-height: 26px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.ph__lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.94);
+  display: grid;
+  place-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 72px) 16px
+    calc(env(safe-area-inset-bottom, 0px) + 72px);
+}
+
+.ph__lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 20px;
+  object-fit: contain;
+}
+
+.ph__lightbox-close {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.ph__lightbox-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.ph__lightbox-time {
+  position: absolute;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  transform: translateX(-50%);
+  height: 36px;
+  padding: 0 16px 1px;
+  border-radius: 1000px;
+  font-size: 14px;
+  line-height: 36px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* ---------- ПК ---------- */
+@media (min-width: 768px) {
+  .ph__header {
+    grid-template-columns: 48px 1fr;
+    column-gap: 16px;
+  }
+
+  .ph__back {
+    width: 48px;
+    height: 48px;
+  }
+
+  .ph__heading {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .ph__title {
+    font-size: 34px;
+    line-height: 41px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+  }
+
+  .ph__seg {
+    max-width: 520px;
+  }
+
+  .ph__seg-btn {
+    font-size: 15px;
+  }
+
+  .ph__sensors {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
+  }
+
+  .ph__notes,
+  .ph__actions {
+    max-width: 720px;
+  }
+
+  .ph__gallery {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .ph__photo-time {
+    font-size: 13px;
+  }
+}
+
+@media (hover: hover) {
+  .ph__back:hover {
+    transform: scale(1.06);
+  }
+
+  .ph__save:not(:disabled):hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .ph__note-del:hover {
+    color: #ff6b6b;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .ph__photo:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph__seg-indicator {
+    transition: none;
+  }
+}
+
+/* Рекомендуемая полоса на графике */
+.ph__band {
+  fill: rgba(226, 241, 157, 0.1);
+}
+
+.ph__band-line {
+  fill: none;
+  stroke: rgba(226, 241, 157, 0.35);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+/* Нет данных по одному датчику */
+.ph__nodata {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+/* Кнопка «Повторить» */
+.ph__retry {
+  display: block;
+  margin: 12px auto 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Невыполненные команды */
+.ph__icon--bad {
+  background: rgba(255, 69, 58, 0.18);
+  color: #ff453a;
+}
+
+.ph__row-sub--bad {
+  color: #ff6b6b;
+}

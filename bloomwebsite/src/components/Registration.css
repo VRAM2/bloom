@@ -1,0 +1,349 @@
+.reg {
+  --accent: #e2f19d;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Inter", system-ui, "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Фото (393×633 из 852 ≈ 74%) ---------- */
+.reg__photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 74%;
+
+  background-image: url("../assets/registration-background-phone.jpg");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+
+  animation: regPhotoZoom 8s ease-out both;
+}
+
+/* ---------- Затемнение (393×475 ≈ 55.7%) ---------- */
+.reg__shade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 55.7%;
+  min-height: 440px;
+  z-index: 1;
+  pointer-events: none;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.55) 30%,
+    rgba(0, 0, 0, 0.92) 65%,
+    #000 100%
+  );
+}
+
+.reg__shade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 60%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 60%);
+}
+
+/* ---------- Контент ---------- */
+.reg__content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--kb, 0px);
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  padding: 0 34px calc(36px + env(safe-area-inset-bottom, 0px));
+
+  transition: bottom 0.25s var(--ease);
+}
+
+/* title/text слева 41, остальное 34 → добавляем 7px */
+.reg__title {
+  margin: 0 0 0 7px;
+  font-size: 42px;
+  line-height: 49px;
+  font-weight: 400;
+  letter-spacing: -0.6px;
+  white-space: nowrap;
+  color: #fff;
+
+  animation: regUp 0.7s var(--ease) 0.1s both;
+}
+
+.reg__accent {
+  color: var(--accent);
+}
+
+.reg__text {
+  margin: 15px 0 20px 7px;
+  max-width: 300px;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  text-wrap: balance;
+
+  animation: regUp 0.7s var(--ease) 0.2s both;
+}
+
+.reg__form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Поля ---------- */
+.reg__fields {
+  width: 100%;
+  height: 150px;
+  border-radius: 26px;
+  background: #1c1c1e;
+  overflow: hidden;
+
+  transition: background 0.25s ease;
+  animation: regUp 0.7s var(--ease) 0.3s both;
+}
+
+.reg__input {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+
+  font-family: var(--font);
+  font-size: 17px;
+  font-weight: 400;
+  color: #fff;
+  caret-color: var(--accent);
+}
+
+.reg__error {
+  min-height: 20px;
+  margin: 10px 7px 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ff6b6b;
+}
+
+/* тонкие разделители, как в iOS (не нужны — удали это правило) */
+.reg__input + .reg__input {
+  box-shadow: inset 0 1px 0 rgba(235, 235, 245, 0.1);
+  background-clip: padding-box;
+}
+
+.reg__input::placeholder {
+  color: rgba(235, 235, 245, 0.3);
+  opacity: 1;
+}
+
+/* убираем жёлтый автозаполненный фон браузера */
+.reg__input:-webkit-autofill {
+  -webkit-text-fill-color: #fff;
+  transition: background-color 9999s ease-out;
+}
+
+/* ---------- Ссылка «Уже есть аккаунт» ---------- */
+.reg__link {
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(235, 235, 245, 0.6);
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s ease, transform 0.2s var(--ease);
+  animation: regUp 0.7s var(--ease) 0.4s both;
+}
+
+.reg__link span {
+  margin-left: 5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.reg__link:active {
+  opacity: 0.6;
+  transform: scale(0.97);
+}
+
+/* ---------- Кнопка «Продолжить» (как на Welcome) ---------- */
+.reg__button {
+  width: 100%;
+  height: 50px;
+
+  border: none;
+  border-radius: 1000px;
+  background: var(--accent);
+  color: #000;
+
+  font-family: var(--font);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  transition:
+    transform 0.25s var(--ease),
+    filter 0.2s ease,
+    opacity 0.3s ease;
+  animation: regUp 0.7s var(--ease) 0.5s both;
+}
+
+.reg__button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.reg__button:not(:disabled):active {
+  transform: scale(0.97);
+  filter: brightness(0.94);
+}
+
+.reg__button:focus-visible,
+.reg__link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 1000px;
+}
+
+/* ---------- Наведение (мышь) ---------- */
+@media (hover: hover) {
+  .reg__button:not(:disabled):hover {
+    transform: translateY(-2px) scale(1.02);
+    filter: brightness(1.05);
+  }
+
+  .reg__link:hover {
+    transform: translateY(-1px);
+    opacity: 0.85;
+  }
+
+  .reg__fields:hover {
+    background: #212123;
+  }
+}
+
+/* ---------- Анимации ---------- */
+@keyframes regUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes regPhotoZoom {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* ---------- ПК / планшет: фото слева, форма справа ---------- */
+@media (min-width: 768px) {
+  .reg {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    padding: 24px;
+  }
+
+  .reg__photo {
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    height: auto;
+    border-radius: 32px;
+    background-image: url("../assets/registration-background-desktop.jpg");
+    background-position: center;
+    animation: none;
+  }
+
+  .reg__shade {
+    display: none;
+  }
+
+  .reg__content {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: center;
+    padding: 0 clamp(32px, 6vw, 96px);
+  }
+
+  .reg__title {
+    margin-left: 0;
+    font-size: clamp(48px, 4.5vw, 64px);
+    line-height: 1.1;
+  }
+
+  .reg__text {
+    margin: 16px 0 36px;
+    max-width: 430px;
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .reg__form {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .reg__button {
+    height: 56px;
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reg__photo,
+  .reg__title,
+  .reg__text,
+  .reg__fields,
+  .reg__link,
+  .reg__button {
+    animation: none;
+  }
+}
