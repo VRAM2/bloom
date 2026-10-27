@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.deps import get_current_device, get_current_user
+from app.deps import get_current_user
 from app.models import Device, Plant, SensorReading, User, utcnow
 from app.schemas import (
     DeviceCreate,
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["sensors"])
 
-MAX_HISTORY_POINTS = 10_000  # защита от слишком тяжёлого ответа
+MAX_HISTORY_POINTS = 10_000
 
 
 def _own_plant(db: Session, plant_id: int, user: User) -> Plant:
@@ -32,7 +32,27 @@ def _own_plant(db: Session, plant_id: int, user: User) -> Plant:
     return plant
 
 
-# ---------------------------------------------------------------- устройства
+def _public_plant(db: Session, plant_id: int) -> Plant:
+    plant = db.get(Plant, plant_id)
+    if plant is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Растение не найдено")
+    return plant
+
+
+def _optional_device(
+    db: Session,
+    plant_id: int,
+    device_id: int | None,
+) -> Device | None:
+    if device_id is None:
+        return None
+
+    device = db.get(Device, device_id)
+    if device is None or device.plant_id != plant_id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Устройство не найдено")
+    return device
+
+
 @router.post(
     "/plants/{plant_id}/devices",
     response_model=DeviceCreatedOut,
@@ -44,10 +64,13 @@ def create_device(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    """Регистрирует контроллер. Ключ в ответе показывается ОДИН раз: сохрани его в прошивку."""
     plant = _own_plant(db, plant_id, user)
     key = generate_device_key()
-    device = Device(plant_id=plant.id, name=data.name, key_hash=hash_device_key(key))
+    device = Device(
+        plant_id=plant.id,
+        name=data.name,
+        key_hash=hash_device_key(key),
+    )
     db.add(device)
     db.commit()
     db.refresh(device)
@@ -56,7 +79,7 @@ def create_device(
         plant_id=device.plant_id,
         name=device.name,
         created_at=device.created_at,
-        last_seen_at=None,
+        last_seen_at=device.last_seen_at,
         api_key=key,
     )
 
@@ -68,17 +91,23 @@ def list_devices(
     user: User = Depends(get_current_user),
 ):
     plant = _own_plant(db, plant_id, user)
-    return db.scalars(select(Device).where(Device.plant_id == plant.id).order_by(Device.id)).all()
+    return db.scalars(
+        select(Device)
+        .where(Device.plant_id == plant.id)
+        .order_by(Device.id)
+    ).all()
 
 
-@router.delete("/plants/{plant_id}/devices/{device_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/plants/{plant_id}/devices/{device_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 def delete_device(
     plant_id: int,
     device_id: int,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    """Отзывает ключ устройства. Сохранённые показания остаются."""
     plant = _own_plant(db, plant_id, user)
     device = db.get(Device, device_id)
     if device is None or device.plant_id != plant.id:
@@ -88,7 +117,6 @@ def delete_device(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-# ------------------------------------------------------------------ показания
 @router.post(
     "/sensors/readings",
     response_model=SensorReadingOut,
@@ -96,30 +124,38 @@ def delete_device(
 )
 def ingest_reading(
     data: SensorReadingIn,
+    plant_id: int = Query(..., ge=1),
+    device_id: int | None = Query(None, ge=1),
     db: Session = Depends(get_db),
-    device: Device = Depends(get_current_device),
 ):
-    """Приём показаний от контроллера. Заголовок: X-Device-Key."""
+    plant = _public_plant(db, plant_id)
+    device = _optional_device(db, plant.id, device_id)
+
     now = utcnow()
     recorded_at = data.recorded_at or now
     if recorded_at > now + timedelta(minutes=5):
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "recorded_at находится в будущем")
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            "recorded_at находится в будущем",
+        )
 
     reading = SensorReading(
-        plant_id=device.plant_id,
-        device_id=device.id,
+        plant_id=plant.id,
+        device_id=device.id if device else None,
         recorded_at=recorded_at,
         **data.model_dump(exclude={"recorded_at"}),
     )
     db.add(reading)
-    device.last_seen_at = now
+
+    if device is not None:
+        device.last_seen_at = now
+
     db.commit()
     db.refresh(reading)
     out = SensorReadingOut.model_validate(reading)
 
-    # сбой проверки не должен ломать приём показаний
     try:
-        check_reading(db, device.plant_id, reading)
+        check_reading(db, plant.id, reading)
     except Exception:
         db.rollback()
         logger.exception("Не удалось проверить показания на опасные значения")
@@ -127,13 +163,15 @@ def ingest_reading(
     return out
 
 
-@router.get("/plants/{plant_id}/sensors/latest", response_model=SensorReadingOut)
+@router.get(
+    "/plants/{plant_id}/sensors/latest",
+    response_model=SensorReadingOut,
+)
 def latest_reading(
     plant_id: int,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    """Текущие (последние полученные) показания."""
     plant = _own_plant(db, plant_id, user)
     reading = db.scalar(
         select(SensorReading)
@@ -142,25 +180,33 @@ def latest_reading(
         .limit(1)
     )
     if reading is None:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Показаний от датчиков пока нет")
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            "Показаний от датчиков пока нет",
+        )
     return reading
 
 
-@router.get("/plants/{plant_id}/sensors/history", response_model=list[SensorReadingOut])
+@router.get(
+    "/plants/{plant_id}/sensors/history",
+    response_model=list[SensorReadingOut],
+)
 def history(
     plant_id: int,
-    hours: int = Query(24, ge=1, le=168, description="За сколько последних часов"),
+    hours: int = Query(24, ge=1, le=168),
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    """Показания за последние N часов (по умолчанию 24), от старых к новым."""
     plant = _own_plant(db, plant_id, user)
     since = utcnow() - timedelta(hours=hours)
     rows = db.scalars(
         select(SensorReading)
-        .where(SensorReading.plant_id == plant.id, SensorReading.recorded_at >= since)
+        .where(
+            SensorReading.plant_id == plant.id,
+            SensorReading.recorded_at >= since,
+        )
         .order_by(SensorReading.recorded_at.desc(), SensorReading.id.desc())
         .limit(MAX_HISTORY_POINTS)
     ).all()
-    rows.reverse()  # если точек больше лимита, отбрасываются самые старые
+    rows.reverse()
     return rows

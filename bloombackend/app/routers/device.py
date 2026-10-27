@@ -1,26 +1,38 @@
-from app.deps import get_current_device, get_db
-from app.models import Device, Plant
-from app.schemas import PlantCareOut
-from app.services.care_service import latest_care, get_care_for_today
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.models import Plant
+from app.schemas import PlantCareOut
+from app.services.care_service import latest_care, get_care_for_today
 
 router = APIRouter(tags=["care"])
 
 
-@router.get("/device/care", response_model=PlantCareOut)
+@router.get(
+    "/plants/{plant_id}/device/care",
+    response_model=PlantCareOut,
+)
 def device_care(
+    plant_id: int,
     db: Session = Depends(get_db),
-    device: Device = Depends(get_current_device),
 ):
-    """Благоприятные условия для растения устройства. Заголовок: X-Device-Key."""
-    # сначала последняя сохранённая запись, чтобы не ждать нейросеть
-    care = latest_care(db, device.plant_id)
+    plant = db.get(Plant, plant_id)
+    if plant is None:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            "Растение не найдено",
+        )
+
+    care = latest_care(db, plant.id)
     if care is None:
-        plant = db.get(Plant, device.plant_id)
-        care = get_care_for_today(db, plant) if plant else None
+        care = get_care_for_today(db, plant)
+
     if care is None:
         raise HTTPException(
-            status.HTTP_503_SERVICE_UNAVAILABLE, "Рекомендации пока недоступны"
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            "Рекомендации пока недоступны",
         )
+
     return care

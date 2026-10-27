@@ -19,7 +19,13 @@ async def lifespan(app: FastAPI):
     stop_scheduler()
 
 
-app = FastAPI(title="Smart Greenhouse API", lifespan=lifespan)
+app = FastAPI(
+    title="Smart Greenhouse API",
+    lifespan=lifespan,
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
+)
 
 app.add_middleware(
     CORSMiddleware,
